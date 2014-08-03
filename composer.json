@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Rephlect\\": "lib/"
+        }
+    },
     "require": {
         "slim/slim": "2.*"
     }

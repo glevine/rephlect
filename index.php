@@ -2,7 +2,5 @@
 require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
-$app->get('/', function() {
-    echo 'rephlect!';
-});
+$rephlect = new \Rephlect\Rephlect($app);
 $app->run();
