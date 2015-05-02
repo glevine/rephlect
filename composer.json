@@ -1,10 +1,11 @@
 {
     "autoload": {
         "psr-4": {
-            "Rephlect\\": "lib/"
+            "Rephlect\\": "Rephlect"
         }
     },
     "require": {
-        "slim/slim": "2.*"
+        "slim/slim": "2.*",
+        "doctrine/annotations": "1.2"
     }
 }
