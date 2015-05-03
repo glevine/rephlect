@@ -25,8 +25,10 @@ class Rephlect
         $routes = $loader->load($name);
 
         foreach ($routes as $route) {
-            $this->app->get($route->path, function() {
-                echo 'do something';
+            $this->app->get($route->path, function() use ($route) {
+                $args = func_get_args();
+                $response = call_user_func_array($route->callback, $args);
+                var_dump($response);
             });
         }
     }

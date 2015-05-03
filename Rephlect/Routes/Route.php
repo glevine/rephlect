@@ -4,10 +4,12 @@ namespace Rephlect\Routes;
 class Route
 {
     protected $path = '/';
+    protected $callback;
 
-    public function __construct($path)
+    public function __construct($path, callable $callback)
     {
         $this->__set('path', $path);
+        $this->__set('callback', $callback);
     }
 
     public function __get($key)

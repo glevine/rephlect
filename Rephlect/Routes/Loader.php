@@ -35,7 +35,8 @@ class Loader
 
             foreach ($methodAnnotations as $annotation) {
                 if ($annotation instanceof $this->annotationClass) {
-                    $route = new Route($globals['path'] . $annotation->path);
+                    $path = $globals['path'] . $annotation->path;
+                    $route = new Route($path, array($method->class, $method->name));
                     $collection->add($route);
                 }
             }
