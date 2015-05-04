@@ -2,6 +2,9 @@
 namespace Rephlect\Annotations;
 
 /**
+ * Class Route
+ * @package Rephlect\Annotations
+ *
  * Annotation class for @Route().
  *
  * @Annotation
@@ -9,9 +12,21 @@ namespace Rephlect\Annotations;
  */
 class Route extends AbstractAnnotation
 {
+    /**
+     * @var string
+     * The route's path (e.g., "/Foo/:id").
+     */
     protected $path;
+
+    /**
+     * @var string
+     * The HTTP verb (method) that applies to the route.
+     */
     protected $verb = 'get';
 
+    /**
+     * {@inheritDoc}
+     */
     public function __construct(array $options)
     {
         if (isset($options['value'])) {
@@ -20,11 +35,5 @@ class Route extends AbstractAnnotation
         }
 
         parent::__construct($options);
-    }
-
-    public function __set($key, $value)
-    {
-        $this->assertProperty($key);
-        $this->$key = $value;
     }
 }
