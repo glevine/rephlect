@@ -5,7 +5,6 @@
         }
     },
     "require": {
-        "slim/slim": "2.*",
         "doctrine/annotations": "1.2"
     }
 }
