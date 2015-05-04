@@ -1,10 +1,23 @@
 {
+    "name": "glevine/rephlect",
+    "version": "0.1.0",
+    "type": "library",
+    "description": "Slim framework middleware for fast bootstrapping of a REST API right from your source code",
+    "keywords": ["slim", "middleware", "rest"],
+    "homepage": "https://github.com/glevine/rephlect",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Greg Levine",
+            "email": "levine.greg@gmail.com"
+        }
+    ],
+    "require": {
+        "doctrine/annotations": "1.2"
+    },
     "autoload": {
         "psr-4": {
             "Rephlect\\": "Rephlect"
         }
-    },
-    "require": {
-        "doctrine/annotations": "1.2"
     }
 }
