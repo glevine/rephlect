@@ -28,7 +28,7 @@ class Rephlect extends Middleware
 
     public function mapRoute($resource)
     {
-        AnnotationRegistry::registerAutoloadNamespace('Rephlect\Annotations');
+        AnnotationRegistry::registerLoader('class_exists');
         $reader = new SimpleAnnotationReader();
         $reader->addNamespace('Rephlect\Annotations');
 
