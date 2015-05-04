@@ -10,6 +10,7 @@ namespace Rephlect\Annotations;
 class Route extends AbstractAnnotation
 {
     protected $path;
+    protected $verb = 'get';
 
     public function __construct(array $options)
     {
@@ -19,5 +20,11 @@ class Route extends AbstractAnnotation
         }
 
         parent::__construct($options);
+    }
+
+    public function __set($key, $value)
+    {
+        $this->assertProperty($key);
+        $this->$key = $value;
     }
 }

@@ -3,13 +3,15 @@ namespace Rephlect\Routes;
 
 class Route
 {
+    protected $app;
     protected $path = '/';
-    protected $callback;
+    protected $handler;
+    protected $verb = 'get';
 
-    public function __construct($path, callable $callback)
+    public function __construct($path, callable $handler)
     {
         $this->__set('path', $path);
-        $this->__set('callback', $callback);
+        $this->__set('handler', $handler);
     }
 
     public function __get($key)
@@ -29,6 +31,25 @@ class Route
             default:
                 $this->$key = $value;
         }
+    }
+
+    public function handle()
+    {
+        $args = func_get_args();
+
+        switch ($this->verb) {
+            case 'post':
+            case 'put':
+                $json = $this->app->request()->getBody();
+                $data = json_decode($json, true);
+                $args[] = $data;
+                break;
+        }
+
+        $response = call_user_func_array($this->handler, $args);
+
+        $this->app->response()->header('Content-Type', 'application/json');
+        echo json_encode($response);
     }
 
     /**

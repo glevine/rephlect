@@ -28,7 +28,7 @@ class Loader
         }
 
         $globals = $this->getGlobals($class);
-        $collection = new Collection();
+        $routes = new Collection();
 
         foreach ($class->getMethods() as $method) {
             $methodAnnotations = $this->reader->getMethodAnnotations($method);
@@ -36,13 +36,19 @@ class Loader
             foreach ($methodAnnotations as $annotation) {
                 if ($annotation instanceof $this->annotationClass) {
                     $path = $globals['path'] . $annotation->path;
-                    $route = new Route($path, array($method->class, $method->name));
-                    $collection->add($route);
+
+                    $klass = $method->class;
+                    $obj = new $klass();
+                    $callback = array($obj, $method->name);
+
+                    $route = new Route($path, $callback);
+                    $route->verb = $annotation->verb;
+                    $routes->add($route);
                 }
             }
         }
 
-        return $collection;
+        return $routes;
     }
 
     protected function getGlobals(\ReflectionClass $class)

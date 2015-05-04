@@ -17,7 +17,8 @@ class Collection implements \IteratorAggregate, \Countable
 
     public function add(Route $route)
     {
-        unset($this->routes[$route->path]);
-        $this->routes[$route->path] = $route;
+        $key = "{$route->verb}:{$route->path}";
+        unset($this->routes[$key]);
+        $this->routes[$key] = $route;
     }
 }
