@@ -36,14 +36,10 @@ class Route
     public function handle()
     {
         $args = func_get_args();
+        $body = $this->app->request()->getBody();
 
-        switch ($this->verb) {
-            case 'post':
-            case 'put':
-                $json = $this->app->request()->getBody();
-                $data = json_decode($json, true);
-                $args[] = $data;
-                break;
+        if (!empty($body)) {
+            $args[] = $body;
         }
 
         $response = call_user_func_array($this->handler, $args);
