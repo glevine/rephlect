@@ -68,7 +68,7 @@ class Rephlect extends Middleware
 
         foreach ($routes as $route) {
             $route->app = $this->app;
-            $this->app->{$route->verb}($route->path, array($route, 'handle'));
+            $this->app->{$route->verb}($route->path, array($route, 'handle'))->conditions($route->conditions);
         }
     }
 }

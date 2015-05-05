@@ -62,6 +62,9 @@ class Loader
                     // append the path from the method annotation to that from the class annotation to get the full path
                     $path = $globals['path'] . $annotation->path;
 
+                    // merge the conditions from the method annotation with those from the class annotation
+                    $conditions = array_merge($globals['conditions'], $annotation->conditions);
+
                     // the callback should be called on an instance of the class because static methods suck
                     $klass = $method->class;
                     $obj = new $klass();
@@ -71,6 +74,7 @@ class Loader
                         // wire up the route and its handler and add it the collection of routes
                         $route = new Route($callback, $path);
                         $route->verb = $verb;
+                        $route->conditions = $conditions;
                         $routes->add($route);
                     }
                 }
@@ -88,7 +92,10 @@ class Loader
      */
     protected function getGlobals(\ReflectionClass $class)
     {
-        $globals = array('path' => '');
+        $globals = array(
+            'path' => '',
+            'conditions' => array(),
+        );
         $classAnnotations = $this->reader->getClassAnnotation($class, $this->annotationClass);
 
         if (!$class) {
@@ -97,6 +104,10 @@ class Loader
 
         if (!is_null($classAnnotations->path)) {
             $globals['path'] = $classAnnotations->path;
+        }
+
+        if (is_array($classAnnotations->conditions)) {
+            $globals['conditions'] = $classAnnotations->conditions;
         }
 
         return $globals;
