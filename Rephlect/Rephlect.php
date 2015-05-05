@@ -14,6 +14,12 @@ class Rephlect extends Middleware
 {
     /**
      * @var array
+     * The standard HTTP verbs (methods) for which Slim has convenience methods.
+     */
+    protected static $verbs = array('get', 'post', 'put', 'patch', 'delete', 'options', 'any');
+
+    /**
+     * @var array
      * The list of full-qualified class names for resources whose methods should be mapped to routes when the
      * application runs.
      */
@@ -68,7 +74,18 @@ class Rephlect extends Middleware
 
         foreach ($routes as $route) {
             $route->app = $this->app;
-            $this->app->{$route->verb}($route->path, array($route, 'handle'))->conditions($route->conditions);
+
+            // use Slim::map() if it's a custom verb
+            $isCustomVerb = !in_array($route->verb, static::$verbs);
+            $method = $isCustomVerb ? 'map' : $route->verb;
+            $mappedRoute = $this->app->{$method}($route->path, array($route, 'handle'));
+
+            // need to specify the verb on the route when it's custom
+            if ($isCustomVerb) {
+                $mappedRoute->via(strtoupper($route->verb));
+            }
+
+            $mappedRoute->conditions($route->conditions);
         }
     }
 }
