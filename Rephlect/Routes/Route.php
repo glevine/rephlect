@@ -32,6 +32,12 @@ class Route
     protected $verb = 'get';
 
     /**
+     * @var array
+     * The route's conditions.
+     */
+    protected $conditions = array();
+
+    /**
      * Constructor.
      *
      * @param callable $handler

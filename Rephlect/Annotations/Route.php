@@ -25,6 +25,12 @@ class Route extends AbstractAnnotation
     protected $verb = array('get');
 
     /**
+     * @var array
+     * The route's conditions.
+     */
+    protected $conditions = array();
+
+    /**
      * {@inheritDoc}
      */
     public function __construct(array $options)
