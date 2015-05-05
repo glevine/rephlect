@@ -1,6 +1,6 @@
 {
     "name": "glevine/rephlect",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "type": "library",
     "description": "Slim framework middleware for fast bootstrapping of a REST API right from your source code",
     "keywords": ["slim", "middleware", "rest"],
