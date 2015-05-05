@@ -19,10 +19,10 @@ class Route extends AbstractAnnotation
     protected $path;
 
     /**
-     * @var string
-     * The HTTP verb (method) that applies to the route.
+     * @var array
+     * The HTTP verbs (methods) that apply to the route.
      */
-    protected $verb = 'get';
+    protected $verb = array('get');
 
     /**
      * {@inheritDoc}
@@ -35,5 +35,21 @@ class Route extends AbstractAnnotation
         }
 
         parent::__construct($options);
+    }
+
+    /**
+     * Sets the verb.
+     *
+     * In support of multiple verbs per route, the verb should always be an array, even when there is only one.
+     *
+     * @param string|array $verb
+     */
+    protected function setVerb($verb)
+    {
+        if (!is_array($verb)) {
+            $verb = array($verb);
+        }
+
+        $this->verb = $verb;
     }
 }

@@ -67,10 +67,12 @@ class Loader
                     $obj = new $klass();
                     $callback = array($obj, $method->name);
 
-                    // wire up the route and its handler and add it the collection of routes
-                    $route = new Route($callback, $path);
-                    $route->verb = $annotation->verb;
-                    $routes->add($route);
+                    foreach ($annotation->verb as $verb) {
+                        // wire up the route and its handler and add it the collection of routes
+                        $route = new Route($callback, $path);
+                        $route->verb = $verb;
+                        $routes->add($route);
+                    }
                 }
             }
         }

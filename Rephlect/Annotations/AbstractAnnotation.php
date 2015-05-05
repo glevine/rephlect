@@ -27,7 +27,13 @@ abstract class AbstractAnnotation
      */
     public function __get($key)
     {
-        return $this->$key;
+        $getter = "get{$key}";
+
+        if (method_exists($this, $getter)) {
+            return $this->$getter();
+        } else {
+            return $this->$key;
+        }
     }
 
     /**
@@ -38,6 +44,12 @@ abstract class AbstractAnnotation
      */
     public function __set($key, $value)
     {
-        $this->$key = $value;
+        $setter = "set{$key}";
+
+        if (method_exists($this, $setter)) {
+            $this->$setter($value);
+        } else {
+            $this->$key = $value;
+        }
     }
 }
