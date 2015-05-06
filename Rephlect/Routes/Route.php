@@ -123,25 +123,19 @@ class Route
     /**
      * Sets the verb.
      *
-     * The verb must be one of the allowed HTTP verbs. Defaults to "get" when empty.
+     * Defaults to "get" when empty.
      *
      * @param string $verb
      * @throws \InvalidArgumentException
      */
     protected function setVerb($verb)
     {
-        $allowedVerbs = array('get', 'post', 'put', 'patch', 'delete');
-
         if (!is_string($verb) && !is_null($verb)) {
             throw new \InvalidArgumentException(sprintf('"%s" is an invalid HTTP verb.', $verb));
         }
 
         if (empty($verb)) {
             $verb = 'get';
-        }
-
-        if (!in_array($verb, $allowedVerbs)) {
-            throw new \InvalidArgumentException(sprintf('"%s" is an invalid HTTP verb.', $verb));
         }
 
         $this->verb = $verb;
