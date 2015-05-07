@@ -89,8 +89,7 @@ class Route
      * Any parameters are passed to the invoked function. Any data parsed from the request body is appended, as a hash,
      * to the end of the parameter list.
      *
-     * Sets the response's Content-Type header to "application/json" and echoes the JSON encoded response. Slim captures
-     * the output and appends it to the response.
+     * Sets the response's Content-Type header to "application/json" and appends the JSON encoded response.
      */
     public function handle()
     {
@@ -104,7 +103,19 @@ class Route
         $response = call_user_func_array($this->handler, $args);
 
         $this->app->response()->header('Content-Type', 'application/json');
-        echo json_encode($response);
+        $this->app->response()->write(json_encode($response));
+    }
+
+    /**
+     * Sets the handler.
+     *
+     * This method only exists as a means to guarantee that the handler is a callable.
+     *
+     * @param callable $handler
+     */
+    protected function setHandler(callable $handler)
+    {
+        $this->handler = $handler;
     }
 
     /**
@@ -131,8 +142,10 @@ class Route
     protected function setVerb($verb)
     {
         if (!is_string($verb) && !is_null($verb)) {
-            throw new \InvalidArgumentException(sprintf('"%s" is an invalid HTTP verb.', $verb));
+            throw new \InvalidArgumentException('Invalid HTTP verb.');
         }
+
+        $verb = trim($verb);
 
         if (empty($verb)) {
             $verb = 'get';
