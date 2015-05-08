@@ -34,17 +34,32 @@ class Collection implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Adds a new route to the collection with a unique key.
+     * Adds one or more new routes to the collection with unique keys.
      *
      * Replaces a route in the case of a key collision. The key is computed with the route's verb and path separated by
      * a colon (e.g., "put:/Foo/:id").
      *
-     * @param Route $route
+     * @param array|Route $routes One or more Route objects to add.
+     * @return array The routes that could not be added.
      */
-    public function add(Route $route)
+    public function add($routes)
     {
-        $key = "{$route->verb}:{$route->path}";
-        unset($this->routes[$key]);
-        $this->routes[$key] = $route;
+        $failed = array();
+
+        if (!is_array($routes)) {
+            $routes = array($routes);
+        }
+
+        foreach ($routes as $route) {
+            if ($route instanceof Route) {
+                $key = "{$route->verb}:{$route->path}";
+                unset($this->routes[$key]);
+                $this->routes[$key] = $route;
+            } else {
+                $failed[] = $route;
+            }
+        }
+
+        return $failed;
     }
 }

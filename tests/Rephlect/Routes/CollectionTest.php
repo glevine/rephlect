@@ -9,16 +9,16 @@ use Rephlect\Routes\Collection;
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Confirms that routes can be added to the collection and how the reference key is constructed.
+     * Confirms that one route can be added to the collection and how the reference key is constructed.
      *
      * @covers ::add
      * @covers Rephlect\Routes\Route
      */
-    public function testAdd()
+    public function testAddOne()
     {
         $routes = new Collection();
         $route = $this->buildRoute('/posts', 'get');
-        $routes->add($route);
+        $failed = $routes->add($route);
 
         $collection = new \ReflectionClass($routes);
         $property = $collection->getProperty('routes');
@@ -26,6 +26,77 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $value = $property->getValue($routes);
         $this->assertCount(1, $value);
         $this->assertSame($route, $value['get:/posts']);
+        $this->assertCount(0, $failed);
+    }
+
+    /**
+     * Confirms that multiple routes can be added to the collection at once.
+     *
+     * @covers ::add
+     * @covers Rephlect\Routes\Route
+     */
+    public function testAddMultiple()
+    {
+        $routes = new Collection();
+        $route1 = $this->buildRoute('/posts', 'get');
+        $route2 = $this->buildRoute('/posts', 'post');
+        $route3 = $this->buildRoute('/posts/:id', 'get');
+        $failed = $routes->add(array($route1, $route2, $route3));
+
+        $collection = new \ReflectionClass($routes);
+        $property = $collection->getProperty('routes');
+        $property->setAccessible(true);
+        $value = $property->getValue($routes);
+        $this->assertCount(3, $value);
+        $this->assertSame($route1, $value['get:/posts']);
+        $this->assertSame($route2, $value['post:/posts']);
+        $this->assertSame($route3, $value['get:/posts/:id']);
+        $this->assertCount(0, $failed);
+    }
+
+    /**
+     * Confirms that a new route replaces the old route if their keys collide.
+     *
+     * @covers ::add
+     * @covers Rephlect\Routes\Route
+     */
+    public function testAddKeyCollision()
+    {
+        $routes = new Collection();
+
+        $route1 = $this->buildRoute('/posts', 'get');
+        $route1->handler = function() {};
+        $routes->add($route1);
+
+        $route2 = $this->buildRoute('/posts', 'get');
+        $route2->handler = function() {};
+        $routes->add($route2);
+
+        $collection = new \ReflectionClass($routes);
+        $property = $collection->getProperty('routes');
+        $property->setAccessible(true);
+        $value = $property->getValue($routes);
+        $this->assertCount(1, $value);
+        $this->assertSame($route2->handler, $value['get:/posts']->handler);
+    }
+
+    /**
+     * Confirms that any routes that could not be added are returned.
+     *
+     * @covers ::add
+     * @covers Rephlect\Routes\Route
+     */
+    public function testAddInvalidParameter()
+    {
+        $routes = new Collection();
+        $failed = $routes->add('foo');
+
+        $collection = new \ReflectionClass($routes);
+        $property = $collection->getProperty('routes');
+        $property->setAccessible(true);
+        $value = $property->getValue($routes);
+        $this->assertCount(0, $value);
+        $this->assertCount(1, $failed);
     }
 
     /**
