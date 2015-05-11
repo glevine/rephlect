@@ -257,10 +257,10 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     {
         $expected = array_filter(array_merge(array('id' => 10), (is_array($body) ? $body : array($body))));
 
-        $request = $this->getMock('Tests\Rephlect\Helpers\Slim\Request', array('getBody'));
+        $request = $this->getMock('Slim\Request', array('getBody'));
         $request->expects($this->once())->method('getBody')->willReturn($body);
 
-        $response = $this->getMock('Tests\Rephlect\Helpers\Slim\Response', array('header', 'write'));
+        $response = $this->getMock('Slim\Response', array('header', 'write'));
         $response->expects($this->once())
             ->method('header')
             ->with($this->equalTo('Content-Type'), $this->equalTo('application/json'));
@@ -268,7 +268,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
             ->method('write')
             ->with($this->equalTo(json_encode($expected)));
 
-        $app = $this->getMock('Tests\Rephlect\Helpers\Slim\Slim', array('request', 'response'));
+        $app = $this->getMock('Slim\Slim', array('request', 'response'));
         $app->expects($this->once())->method('request')->willReturn($request);
         $app->expects($this->exactly(2))->method('response')->willReturn($response);
 
@@ -298,10 +298,10 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     {
         $expected = array_filter(array_merge(array('id' => $id), (is_array($body) ? $body : array($body))));
 
-        $request = $this->getMock('Tests\Rephlect\Helpers\Slim\Request', array('getBody'));
+        $request = $this->getMock('Slim\Request', array('getBody'));
         $request->expects($this->once())->method('getBody')->willReturn($body);
 
-        $response = $this->getMock('Tests\Rephlect\Helpers\Slim\Response', array('header', 'write'));
+        $response = $this->getMock('Slim\Response', array('header', 'write'));
         $response->expects($this->once())
             ->method('header')
             ->with($this->equalTo('Content-Type'), $this->equalTo('application/json'));
@@ -309,7 +309,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
             ->method('write')
             ->with($this->equalTo(json_encode($expected)));
 
-        $app = $this->getMock('Tests\Rephlect\Helpers\Slim\Slim', array('request', 'response'));
+        $app = $this->getMock('Slim\Slim', array('request', 'response'));
         $app->expects($this->once())->method('request')->willReturn($request);
         $app->expects($this->exactly(2))->method('response')->willReturn($response);
 

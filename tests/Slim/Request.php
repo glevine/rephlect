@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Rephlect\Helpers\Slim;
+namespace Slim;
 
 /**
  * Mocks the Slim request class.
