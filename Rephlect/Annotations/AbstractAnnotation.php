@@ -52,4 +52,12 @@ abstract class AbstractAnnotation
             $this->$key = $value;
         }
     }
+
+    /**
+     * Merges another annotation into this one and returns the result.
+     *
+     * @param $annotation
+     * @return mixed
+     */
+    abstract public function merge($annotation);
 }

@@ -13,7 +13,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    public function provider()
+    public function constructorProvider()
     {
         return array(
             // value becomes path
@@ -122,10 +122,111 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Data provider the operation to merge two routes.
+     *
+     * @return array
+     */
+    public function mergeProvider()
+    {
+        return array(
+            // no defaults, annotation only defines path
+            array(
+                array(),
+                array('path' => '/posts/:id'),
+                array(
+                    'path' => '/posts/:id',
+                    'verb' => array('get'),
+                    'conditions' => array(),
+                ),
+            ),
+            // no defaults, annotation defines all
+            array(
+                array(),
+                array(
+                    'path' => '/posts/:id',
+                    'verb' => array('put'),
+                    'conditions' => array('id' => '\d+'),
+                ),
+                array(
+                    'path' => '/posts/:id',
+                    'verb' => array('put'),
+                    'conditions' => array('id' => '\d+'),
+                ),
+            ),
+            // default path
+            array(
+                array('path' => '/posts'),
+                array('path' => '/:id'),
+                array(
+                    'path' => '/posts/:id',
+                    'verb' => array('get'),
+                    'conditions' => array(),
+                ),
+            ),
+            // default conditions
+            array(
+                array('conditions' => array('id' => '\d+')),
+                array('path' => '/posts/:id'),
+                array(
+                    'path' => '/posts/:id',
+                    'verb' => array('get'),
+                    'conditions' => array('id' => '\d+'),
+                ),
+            ),
+            // default verb (gets ignored)
+            array(
+                array('verb' => 'delete'),
+                array('path' => '/posts/:id'),
+                array(
+                    'path' => '/posts/:id',
+                    'verb' => array('get'),
+                    'conditions' => array(),
+                ),
+            ),
+            // selective overwrite in cases of condition conflicts
+            array(
+                array('conditions' => array('id' => '\d+')),
+                array(
+                    'path' => '/posts/:id',
+                    'conditions' => array('id' => '\d{1,3}'),
+                ),
+                array(
+                    'path' => '/posts/:id',
+                    'verb' => array('get'),
+                    'conditions' => array('id' => '\d{1,3}'),
+                ),
+            ),
+            // typical scenario
+            array(
+                array(
+                    'path' => '/posts',
+                    'conditions' => array(
+                        'id' => '\d+',
+                        'name' => '[a-zA-Z]',
+                    ),
+                ),
+                array(
+                    'path' => '/:id',
+                    'verb' => array('put', 'patch'),
+                    'conditions' => array('id' => '\d{1,3}'),
+                ),
+                array(
+                    'path' => '/posts/:id',
+                    'verb' => array('put', 'patch'),
+                    'conditions' => array(
+                        'id' => '\d{1,3}',
+                        'name' => '[a-zA-Z]',
+                    ),
+                ),
+            ),
+        );
+    }
+
+    /**
      * @covers ::__construct
      * @covers ::setVerb
      * @covers Rephlect\Annotations\AbstractAnnotation
-     * @dataProvider provider
+     * @dataProvider constructorProvider
      * @param array $options
      * @param array $expected
      */
@@ -136,5 +237,25 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         foreach ($expected as $key => $value) {
             $this->assertSame($expected[$key], $route->$key);
         }
+    }
+
+    /**
+     * @covers ::__construct
+     * @covers ::setVerb
+     * @covers ::merge
+     * @covers Rephlect\Annotations\AbstractAnnotation
+     * @dataProvider mergeProvider
+     * @param $defaults
+     * @param $annotation
+     * @param $expected
+     */
+    public function testMerge($defaults, $annotation, $expected)
+    {
+        $default = new Route($defaults);
+        $method = new Route($annotation);
+        $merged = $default->merge($method);
+        $this->assertSame($expected['path'], $merged->path);
+        $this->assertSame($expected['verb'], $merged->verb);
+        $this->assertSame($expected['conditions'], $merged->conditions);
     }
 }

@@ -8,6 +8,11 @@ class ConcreteAnnotation extends AbstractAnnotation
     protected $foo;
     protected $bar;
 
+    public function merge($annotation)
+    {
+        return $annotation;
+    }
+
     protected function getFoo()
     {
         return $this->foo;

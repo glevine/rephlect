@@ -44,6 +44,29 @@ class Route extends AbstractAnnotation
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * Returns a new annotation object without modifying this one.
+     *
+     * @param Route $annotation
+     * @return Route
+     */
+    public function merge($annotation)
+    {
+        $className = get_class($this);
+        $options = array(
+            // append the path from the method annotation to that from the class annotation to get the full path
+            'path' => $this->path . $annotation->path,
+            // the verb is never defined on the class annotation, so simply use the verb from the method annotation
+            'verb' => $annotation->verb,
+            // merge the conditions from the method annotation with those from the class annotation
+            'conditions' => array_unique(array_merge($this->conditions, $annotation->conditions)),
+        );
+
+        return new $className($options);
+    }
+
+    /**
      * Sets the verb.
      *
      * In support of multiple verbs per route, the verb should always be an array, even when there is only one.

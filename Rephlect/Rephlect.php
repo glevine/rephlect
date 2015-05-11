@@ -70,8 +70,8 @@ class Rephlect extends Middleware
         $reader = new SimpleAnnotationReader();
         $reader->addNamespace('Rephlect\Annotations');
 
-        $loader = new RoutesLoader($reader);
-        $routes = $loader->load($resource);
+        $loader = new RoutesLoader($resource);
+        $routes = $loader->load($reader);
 
         /**
          * The callable passed to iterator_apply must return true in order to continue applying the function. Since
