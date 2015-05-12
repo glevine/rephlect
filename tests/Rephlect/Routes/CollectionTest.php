@@ -2,12 +2,27 @@
 namespace Tests\Rephlect\Routes;
 
 use Rephlect\Routes\Collection;
+use Tests\Rephlect\Helpers\Routes as RoutesHelper;
 
 /**
  * @coversDefaultClass Rephlect\Routes\Collection
  */
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var RoutesHelper
+     * Creates mock route objects.
+     */
+    protected $routesHelper;
+
+    /**
+     * Instantiates a RoutesHelper object for all test cases to use to create routes.
+     */
+    protected function setUp()
+    {
+        $this->routesHelper = new RoutesHelper();
+    }
+
     /**
      * Confirms that one route can be added to the collection and how the reference key is constructed.
      *
@@ -17,7 +32,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testAddOne()
     {
         $routes = new Collection();
-        $route = $this->buildRoute('/posts', 'get');
+        $route = $this->routesHelper->getMockRoute($this, '/posts', 'get');
         $failed = $routes->add($route);
 
         $collection = new \ReflectionClass($routes);
@@ -38,9 +53,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testAddMultiple()
     {
         $routes = new Collection();
-        $route1 = $this->buildRoute('/posts', 'get');
-        $route2 = $this->buildRoute('/posts', 'post');
-        $route3 = $this->buildRoute('/posts/:id', 'get');
+        $route1 = $this->routesHelper->getMockRoute($this, '/posts', 'get');
+        $route2 = $this->routesHelper->getMockRoute($this, '/posts', 'post');
+        $route3 = $this->routesHelper->getMockRoute($this, '/posts/:id', 'get');
         $failed = $routes->add(array($route1, $route2, $route3));
 
         $collection = new \ReflectionClass($routes);
@@ -64,11 +79,11 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $routes = new Collection();
 
-        $route1 = $this->buildRoute('/posts', 'get');
+        $route1 = $this->routesHelper->getMockRoute($this, '/posts', 'get');
         $route1->handler = function() {};
         $routes->add($route1);
 
-        $route2 = $this->buildRoute('/posts', 'get');
+        $route2 = $this->routesHelper->getMockRoute($this, '/posts', 'get');
         $route2->handler = function() {};
         $routes->add($route2);
 
@@ -109,12 +124,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testCount()
     {
         $routes = new Collection();
-        $routes->add($this->buildRoute('/posts', 'get'));
-        $routes->add($this->buildRoute('/posts', 'post'));
-        $routes->add($this->buildRoute('/posts/:id', 'get'));
-        $routes->add($this->buildRoute('/posts/:id', 'put'));
-        $routes->add($this->buildRoute('/posts/:id', 'patch'));
-        $routes->add($this->buildRoute('/posts/:id', 'delete'));
+        $routes->add($this->routesHelper->getMockRoute($this, '/posts', 'get'));
+        $routes->add($this->routesHelper->getMockRoute($this, '/posts', 'post'));
+        $routes->add($this->routesHelper->getMockRoute($this, '/posts/:id', 'get'));
+        $routes->add($this->routesHelper->getMockRoute($this, '/posts/:id', 'put'));
+        $routes->add($this->routesHelper->getMockRoute($this, '/posts/:id', 'patch'));
+        $routes->add($this->routesHelper->getMockRoute($this, '/posts/:id', 'delete'));
         $this->assertCount(6, $routes);
     }
 
@@ -128,12 +143,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testIterator()
     {
         $routes = array(
-            $this->buildRoute('/posts', 'get'),
-            $this->buildRoute('/posts', 'post'),
-            $this->buildRoute('/posts/:id', 'get'),
-            $this->buildRoute('/posts/:id', 'put'),
-            $this->buildRoute('/posts/:id', 'patch'),
-            $this->buildRoute('/posts/:id', 'delete'),
+            $this->routesHelper->getMockRoute($this, '/posts', 'get'),
+            $this->routesHelper->getMockRoute($this, '/posts', 'post'),
+            $this->routesHelper->getMockRoute($this, '/posts/:id', 'get'),
+            $this->routesHelper->getMockRoute($this, '/posts/:id', 'put'),
+            $this->routesHelper->getMockRoute($this, '/posts/:id', 'patch'),
+            $this->routesHelper->getMockRoute($this, '/posts/:id', 'delete'),
         );
 
         $collection = new Collection();
@@ -149,23 +164,5 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         foreach ($collection as $route) {
             $this->assertSame($routes[$i++], $route);
         }
-    }
-
-    /**
-     * Returns a mock route that does not call the original constructor.
-     *
-     * @param string $path
-     * @param string $verb
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    protected function buildRoute($path, $verb)
-    {
-        $route = $this->getMockBuilder('Rephlect\Routes\Route')
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $route->path = $path;
-        $route->verb = $verb;
-        return $route;
     }
 }

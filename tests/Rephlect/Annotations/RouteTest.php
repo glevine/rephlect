@@ -223,6 +223,8 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Confirms that a route annotation object will be instantiated properly from the supplied options.
+     *
      * @covers ::__construct
      * @covers ::setVerb
      * @covers Rephlect\Annotations\AbstractAnnotation
@@ -240,6 +242,8 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Confirms that two routes are merged properly.
+     *
      * @covers ::__construct
      * @covers ::setVerb
      * @covers ::merge

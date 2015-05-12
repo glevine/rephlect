@@ -9,6 +9,8 @@ use Rephlect\Routes\Loader;
 class LoaderTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Confirms that an exception is thrown when the class is not a string.
+     *
      * @covers ::__construct
      * @expectedException \InvalidArgumentException
      */
@@ -18,6 +20,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Confirms that an exception is thrown when the class does not exist.
+     *
      * @covers ::__construct
      * @expectedException \InvalidArgumentException
      */
@@ -27,6 +31,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Confirms that an exception is thrown when the class is abstract.
+     *
      * @covers ::__construct
      * @expectedException \InvalidArgumentException
      */
@@ -36,6 +42,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Confirms that a collection of routes will be parsed from a class.
+     *
      * @covers ::__construct
      * @covers ::load
      * @covers ::getMethodRouteAnnotations
@@ -127,6 +135,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Confirms that annotations will be ignored if they are not @Route annotations.
+     *
      * @covers ::__construct
      * @covers ::load
      * @covers ::getMethodRouteAnnotations

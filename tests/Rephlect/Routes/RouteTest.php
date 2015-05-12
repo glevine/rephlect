@@ -134,6 +134,8 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Confirms that the path will either be the default or a specified value.
+     *
      * @covers ::__construct
      * @covers ::__get
      * @covers ::__set

@@ -9,6 +9,10 @@ class Slim
     public $request;
     public $response;
 
+    public function hook($name, callable $handler)
+    {
+    }
+
     public function request()
     {
         return $this->request;
@@ -17,5 +21,37 @@ class Slim
     public function response()
     {
         return $this->response;
+    }
+
+    public function map()
+    {
+    }
+
+    public function get()
+    {
+    }
+
+    public function post()
+    {
+    }
+
+    public function put()
+    {
+    }
+
+    public function patch()
+    {
+    }
+
+    public function delete()
+    {
+    }
+
+    public function options()
+    {
+    }
+
+    public function any()
+    {
     }
 }

@@ -59,31 +59,25 @@ class Rephlect extends Middleware
     /**
      * Maps the routes from a single resource.
      *
-     * Uses the {@link SimpleAnnotationReader} to parse notations out of the resource's class. Builds the routes and
-     * then attaches them to the application.
-     *
      * @param string $resource The resource's fully qualified class name, per the PSR-4 autoloading standard.
      */
     public function mapResource($resource)
     {
-        AnnotationRegistry::registerLoader('class_exists');
-        $reader = new SimpleAnnotationReader();
-        $reader->addNamespace('Rephlect\Annotations');
+        $self = $this;
+        $map = function (\Iterator $it) use ($self) {
+            $self->mapRoute($it->current());
+            return true;
+        };
 
-        $loader = new RoutesLoader($resource);
-        $routes = $loader->load($reader);
-
+        $routes = $this->getRoutes($resource);
         /**
          * The callable passed to iterator_apply must return true in order to continue applying the function. Since
          * neither Rephlect::mapResources() nor Rephlect::mapResource() return anything, it would be awkward if
-         * Rephlect::mapRoute() had to. Wrap the call to Rephlect::mapRoute() so that Rephlect::mapRoute() can be a void
-         * function, which keeps the API consistent in the event that Rephlect::mapRoute() is used outside this class.
+         * Rephlect::mapRoute() had to. Wrapping the call to Rephlect::mapRoute() so that Rephlect::mapRoute() can be a
+         * void function, which keeps the API consistent in the event that Rephlect::mapRoute() is used outside this
+         * class.
          */
-        $self = $this;
-        iterator_apply($routes, function(Route $route) use ($self) {
-            $self->mapRoute($route);
-            return true;
-        });
+        iterator_apply($routes, $map, array($routes->getIterator()));
     }
 
     /**
@@ -106,5 +100,22 @@ class Rephlect extends Middleware
         }
 
         $mappedRoute->conditions($route->conditions);
+    }
+
+    /**
+     * Uses the {@link SimpleAnnotationReader} to parse notations out of the resource's class. Builds the routes and
+     * returns the collection.
+     *
+     * @param string $resource The resource's fully qualified class name, per the PSR-4 autoloading standard.
+     * @return Routes\Collection
+     */
+    protected function getRoutes($resource)
+    {
+        AnnotationRegistry::registerLoader('class_exists');
+        $reader = new SimpleAnnotationReader();
+        $reader->addNamespace('Rephlect\Annotations');
+
+        $loader = new RoutesLoader($resource);
+        return $loader->load($reader);
     }
 }
